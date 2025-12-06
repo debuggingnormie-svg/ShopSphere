@@ -84,6 +84,8 @@
                 <button
                   type="button"
                   (click)="increase(item)"
+                  [disabled]="item.quantity >= getMaxQuantity(item)"
+                  [title]="item.quantity >= getMaxQuantity(item) ? 'Maximum available stock reached' : ''"
                 >
                   +
                 </button>

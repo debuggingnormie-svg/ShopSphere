@@ -30,7 +30,8 @@ export class ProductCatalog {
   get filteredProducts(): Product[] {
     const term = this.searchTerm.trim().toLowerCase();
 
-    return this.products.filter(p => {
+    const filtered = this.products.filter(p => {
+      
       const matchCategory =
         this.selectedCategory === 'All' ||
         (!!p.category && p.category === this.selectedCategory);
@@ -44,6 +45,23 @@ export class ProductCatalog {
 
       return matchCategory && matchSearch;
     });
+    return filtered.sort((a, b) => {
+      const aInStock = this.isInStock(a);
+      const bInStock = this.isInStock(b);
+      
+      if (aInStock && !bInStock) return -1;
+      if (!aInStock && bInStock) return 1;
+      return 0; // Keep original order for same stock status
+    });
+  }
+  isInStock(product: Product): boolean {
+    // Product is in stock if stockLevel is undefined, null, or greater than 0
+    // Product is out of stock if stockLevel is 0
+    return product.stockLevel === undefined || product.stockLevel === null || product.stockLevel > 0;
+  }
+
+  isOutOfStock(product: Product): boolean {
+    return !this.isInStock(product);
   }
 
   select(product: Product): void {

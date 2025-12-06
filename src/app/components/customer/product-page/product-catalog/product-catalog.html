@@ -29,13 +29,20 @@
       type="button"
       (click)="select(product)"
       class="catalog-card"
+      [class.out-of-stock]="isOutOfStock(product)"
     >
+    <div class="catalog-card-image-wrapper">
       <img
         [src]="product.previewImage"
         [alt]="product.name"
         (error)="onImageError($event)"
         class="catalog-card-image"
+        [class.out-of-stock-image]="isOutOfStock(product)"
       />
+      <div *ngIf="isOutOfStock(product)" class="out-of-stock-badge">
+        Out of Stock
+      </div>
+    </div>
 
       <div class="catalog-card-body">
         <div class="catalog-card-header">

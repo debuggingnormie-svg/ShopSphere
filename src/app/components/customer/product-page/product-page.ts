@@ -198,6 +198,10 @@ export class ProductPage implements OnInit {
     customization: { color: string; size: string; material: string };
     price: number;
   }): void {
+    if (!this.isProductInStock(event.product)) {
+      alert(`${event.product.name} is out of stock. Please select another product.`);
+      return;
+    }
     const id = `item-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
     const item: CartItem = {
@@ -212,12 +216,49 @@ export class ProductPage implements OnInit {
       price: event.price
     };
 
-    this.cartService.addItem(item);
+    // this.cartService.addItem(item);
+    const added = this.cartService.addItem(item);
+    if (!added) {
+      const availableStock = this.getAvailableStock(event.product);
+      alert(`Cannot add ${event.product.name} to cart. Only ${availableStock} unit(s) available.`);
+      return;
+    }
     this.view = 'cart';
   }
 
   handleUpdateQuantity(event: { itemId: string; quantity: number }): void {
-    this.cartService.updateQuantity(event.itemId, event.quantity);
+    const items = this.cartService.getItems();
+    const item = items.find(i => i.id === event.itemId);
+    
+    if (!item) {
+      return;
+    }
+
+    // Validate stock before updating
+    const availableStock = this.getAvailableStock(item.product);
+    const otherItemsQuantity = items
+      .filter(i => i.id !== event.itemId && i.product.productId === item.product.productId)
+      .reduce((sum, i) => sum + i.quantity, 0);
+
+    if (otherItemsQuantity + event.quantity > availableStock) {
+      const maxAllowed = availableStock - otherItemsQuantity;
+      alert(`Only ${availableStock} unit(s) available for ${item.product.name}. Maximum ${maxAllowed} unit(s) can be added.`);
+      // Set quantity to maximum allowed
+      event.quantity = Math.max(1, maxAllowed);
+    }
+
+    this.cartService.updateQuantity(event.itemId, event.quantity, item.product);
+  }
+
+  isProductInStock(product: Product): boolean {
+    return product.stockLevel === undefined || product.stockLevel === null || product.stockLevel > 0;
+  }
+
+  getAvailableStock(product: Product): number {
+    if (product.stockLevel === undefined || product.stockLevel === null) {
+      return Infinity;
+    }
+    return product.stockLevel;
   }
 
   handleRemoveItem(id: string): void {
@@ -241,7 +282,22 @@ export class ProductPage implements OnInit {
       alert('Your cart is empty.');
       return;
     }
+    const stockErrors: string[] = [];
+    for (const item of items) {
+      const availableStock = this.getAvailableStock(item.product);
+      const totalQuantityForProduct = this.cartService.getTotalQuantityForProduct(item.product.productId);
+      
+      if (!this.isProductInStock(item.product)) {
+        stockErrors.push(`${item.product.name} is out of stock.`);
+      } else if (totalQuantityForProduct > availableStock) {
+        stockErrors.push(`${item.product.name}: Only ${availableStock} unit(s) available, but ${totalQuantityForProduct} unit(s) in cart.`);
+      }
+    }
 
+    if (stockErrors.length > 0) {
+      alert('Cannot proceed with checkout:\n\n' + stockErrors.join('\n'));
+      return;
+    }
     const amount = items.reduce(
       (sum, item) => sum + item.price * item.quantity,
       0
