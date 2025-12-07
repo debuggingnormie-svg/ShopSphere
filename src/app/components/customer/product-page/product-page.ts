@@ -220,7 +220,7 @@ export class ProductPage implements OnInit {
       alert(`Cannot add ${event.product.name} to cart. Only ${availableStock} unit(s) available.`);
       return;
     }
-    this.view = 'cart';
+    this.view = 'customizer';
   }
 
   handleUpdateQuantity(event: { itemId: string; quantity: number }): void {

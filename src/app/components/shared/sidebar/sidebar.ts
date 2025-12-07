@@ -40,7 +40,9 @@ export class Sidebar {
   openNotifications(): void {
     this.openNotificationsEvent.emit();
   }
-
+  goToProduct():void{
+     this.router.navigate(['/products'], { queryParams: { view: 'catalog' } });
+  }
   goToCart(): void {
     this.router.navigate(['/products'], { queryParams: { view: 'cart' } });
   }
