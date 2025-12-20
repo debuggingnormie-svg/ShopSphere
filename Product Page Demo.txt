@@ -1,0 +1,65 @@
+Product Page Demo — Architecture & Runtime
+
+## Architecture (very short)
+- Presentation: ProductPage component (src/app/components/shop/product-page.*) — templates, styles, UI logic.  
+- Application services: ProductService (src/app/core/services/product.ts) — HttpClient calls, mapping, caching.  
+- Domain models: Product model (src/app/core/models/product.ts).  
+- Core infra: AuthInterceptor, global providers (src/app/app.config.ts).  
+- Data/store: JSON Server using src/db.json (mock REST API).  
+- Build/runtime: angular.json + tsconfig.* control build; dev server via npm scripts.
+
+## 15 high-level demo steps (product page, product service, JSON Server)
+1. Open `src/app/components/shop/product-page.ts` to show UI logic that loads and displays products.  
+2. Open `src/app/components/shop/product-page.html` to show product list, image binding, and add-to-cart button.  
+3. Show product model in `src/app/core/models/product.ts` to explain the data shape.  
+4. Open `src/app/core/services/product.ts` — this service performs HTTP calls (getAll, getById, create, update, delete).  
+5. Explain: `ProductPage.ngOnInit` calls `ProductService.getAll()` to fetch the product list on load.  
+6. Show how `ProductService` uses Angular `HttpClient` to call the API endpoints (GET /products).  
+7. Point to `src/db.json` — JSON Server’s data file that exposes `/products`, `/users`, `/orders` endpoints.  
+8. Run JSON Server:
+   - Save/install deps: `npm install`
+   - Start JSON Server: `npm run server` (serves `src/db.json` on http://localhost:3000)  
+9. In browser DevTools → Network, show `GET http://localhost:3000/products` returns product array.  
+10. Set a breakpoint in `ProductService.getAll` to demonstrate runtime call flow: ProductPage → ProductService → HttpClient → JSON Server.  
+11. Demonstrate adding a product: `ProductService.create(product)` → `POST /products` → JSON Server persists.  
+12. Demonstrate update/delete flows: `PUT /products/:id`, `DELETE /products/:id`.  
+13. Show error handling: `AuthInterceptor` and `NotificationService` catch and surface HTTP errors.  
+14. Explain optimistic UI / caching pattern (update UI immediately; confirm with server).  
+15. Run unit tests for product page: `npm test` — open `src/app/components/shop/product-page.spec.ts`.
+
+## Runtime flow (ASCII)
+````text
+Client (Browser)                                 Server (Node/SSR)
+   |                                                  |
+1. request / (index.html)                              |
+   |                                                  |
+2. index.html loads bundles -> main.js                 |
+   |                                                  |
+3. main.ts bootstrapApplication(...) -----------------+-->  A. server.ts receives request
+   |                                                  |     -> main.server.ts renders Angular app
+4. Angular creates root injector and registers         |     -> server returns pre-rendered HTML
+   providers from app.config.ts                        |
+   |                                                  |
+5. Router initializes; initial route resolved         |
+   |                                                  |
+6. RootComponent (App) created -> ProductPage created |
+   |                                                  |
+7. ProductPage.ngOnInit calls ProductService.getAll() |
+   |                                                  |
+8. ProductService -> HttpClient.request(GET /products)|
+   |                                                  |
+9. HTTP pipeline: Interceptors (AuthInterceptor) ---> |
+   |                                                  |
+10. Network: request sent to JSON Server (http://localhost:3000/products)
+   |                                                  |
+11. JSON Server (src/db.json) responds with products  |
+   |                                                  |
+12. HttpClient receives response -> Observables emit |
+   |                                                  |
+13. ProductService maps/transforms data -> returns to ProductPage
+   |                                                  |
+14. Angular change detection runs -> DOM updates (product list displayed)
+   |                                                  |
+15. User actions (add/update/delete) call ProductService -> POST/PUT/DELETE -> JSON Server updates src/db.json
+   |                                                  |
+16. Optional: Lazy routes/components loaded on demand (router triggers module load)

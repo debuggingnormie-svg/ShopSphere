@@ -1,0 +1,487 @@
+Intro & Project 
+
+Q: How do you introduce a project module by module? 
+A: Start with the overall goal, then break down each module by functionality, tech stack, and team responsibility. 
+
+🔹 Java Basics 
+
+Q: What is Java 8 features? 
+A: Lambda expressions, Stream API, Functional interfaces, Default methods, Date & Time API. 
+
+Q: Difference between LinkedList and Array List? 
+A: ArrayList is backed by an array and faster for index access; LinkedList uses nodes and is better for frequent insertions/deletions. 
+
+Q: What is IOC and DI in Spring? 
+A: IOC (Inversion of Control) lets Spring manage object creation; DI (Dependency Injection) provides required objects at runtime. 
+
+Q: Difference between StringBuffer and StringBuilder? 
+A: StringBuffer is thread-safe; StringBuilder is faster but not synchronized. 
+
+Q: Difference between Comparator and Comparable? 
+A: Comparable defines natural ordering via compareTo(); Comparator allows custom sorting via compare(). 
+
+Q: HashMap vs Hashtable? 
+A: HashMap is non-synchronized and faster; Hashtable is synchronized and thread-safe. 
+
+Q: What are SQL joins? 
+A: Joins combine rows from two or more tables based on related columns (INNER, LEFT, RIGHT, FULL). 
+
+Q: What is JDBC? 
+A: Java Database Connectivity is an API for connecting and executing queries with databases. 
+
+Q: What are fixed inbuilt methods in Java? 
+A: Common built-in methods include equals(), hashCode(), toString(), etc. 
+
+Q: What is multithreading in Java? 
+A: It allows concurrent execution of two or more threads for maximum CPU utilization. 
+
+Q: What is JUnit? 
+A: A unit testing framework for Java used to test individual units of code. 
+
+🔹 Agile & Git 
+
+Q: Difference between Agile and Waterfall? 
+A: Agile is iterative and flexible; Waterfall is linear and sequential. 
+
+Q: What are Git commands used in collaboration? 
+A: git clone, git pull, git push, git commit, git branch, git merge. 
+
+Q: What are Sprint and Scrum in Agile? 
+A: Sprint is a time-boxed development cycle; Scrum is a framework for managing Agile projects. 
+
+🔹 OOP & Java Features 
+
+Q: What is abstraction and polymorphism in Java? 
+A: Abstraction hides implementation; polymorphism allows method overriding and overloading. 
+
+Q: What are Java 8 features to implement? 
+A: Use lambda expressions, Stream API, and default methods in real-world scenarios. 
+
+Q: What is garbage collection in Java? 
+A: Automatic memory management that removes unused objects to free memory. 
+
+Q: What is the String Pool? 
+A: A memory area where Java stores string literals to optimize memory usage. 
+
+🔹 JDBC & Collections 
+
+Q: Write JDBC code steps. 
+A: Load driver → Establish connection → Create statement → Execute query → Close connection. 
+
+Q: What are HashMap and LinkedHashMap? 
+A: HashMap stores data unordered; LinkedHashMap maintains insertion order. 
+
+Q: Difference between Collection and Collections? 
+A: Collection is an interface; Collections is a utility class with static methods. 
+
+🔹 SQL & PL/SQL 
+
+Q: What are SQL joins, DDL, DML, DCL? 
+A: Joins combine tables; DDL defines structure; DML manipulates data; DCL controls access. 
+
+Q: What are PL/SQL triggers, cursors, procedures, functions? 
+A: Triggers auto-execute on events; cursors handle query results; procedures/functions encapsulate logic. 
+
+Q: What are aggregate functions in SQL? 
+A: Functions like SUM(), AVG(), COUNT() that operate on sets of values. 
+
+Q: What is ACID in databases? 
+A: Atomicity, Consistency, Isolation, Durability — properties ensuring reliable transactions. 
+
+🔹 Exception Handling & Access 
+
+Q: Difference between final, finally, finalize? 
+A: final prevents modification; finally ensures code execution; finalize is called before garbage collection. 
+
+Q: What are access modifiers in Java? 
+A: public, private, protected, and default — control visibility of classes and members. 
+
+Q: What are static and default keywords? 
+A: static defines class-level members; default provides method implementation in interfaces. 
+
+🔹 Threads & DBMS 
+
+Q: What is thread lifecycle in Java? 
+A: New → Runnable → Running → Blocked → Terminated. 
+
+Q: What is synchronization and serialization? 
+A: Synchronization controls thread access; serialization converts objects to byte streams. 
+
+Q: What is normalization in DBMS? 
+A: Organizing data to reduce redundancy and improve integrity (1NF, 2NF, 3NF). 
+
+ 
+
+Core Java & Concepts 
+
+Q: What is JUnit used for? 
+A: JUnit is a unit testing framework for Java that helps test individual components of code. 
+
+Q: What are Collections in Java? 
+A: Collections are data structures like List, Set, and Map used to store and manipulate groups of objects. 
+
+Q: Difference between Comparable and Comparator? 
+A: Comparable uses compareTo() for natural ordering; Comparator uses compare() for custom sorting. 
+
+Q: How do you add a variable to a class using SOLID principles? 
+A: Use the Open/Closed Principle: extend the class via inheritance or composition without modifying existing code. 
+
+Q: What is the difference between Collection and Collections framework? 
+A: Collection is an interface; Collections is a utility class with static methods like sort(), reverse(). 
+
+Q: What is memory management in Java? 
+A: Java uses garbage collection to automatically manage memory by removing unused objects. 
+
+🔹 Java 8 Features 
+
+Q: What are functional interfaces? 
+A: Interfaces with a single abstract method, used in lambda expressions (e.g., Runnable, Predicate). 
+
+Q: What are lambda expressions? 
+A: Short syntax for implementing functional interfaces, e.g., (a, b) -> a + b. 
+
+Q: What is the Streams API? 
+A: A Java 8 feature for processing collections in a functional style using operations like map, filter, reduce. 
+
+Q: What are default and static methods in interfaces? 
+A: Default methods provide implementation in interfaces; static methods belong to the interface class. 
+
+Q: What is the new Date & Time API in Java 8? 
+A: java.time package with classes like LocalDate, LocalTime, LocalDateTime for better date handling. 
+
+Q: What is the volatile keyword? 
+A: Ensures visibility of changes to variables across threads. 
+
+Q: What is serialization in Java? 
+A: Converting an object into a byte stream for storage or transmission. 
+
+ 
+
+🔹 SQL & JDBC 
+
+Q: What are SQL joins with examples? 
+A: Joins combine rows from multiple tables. Example: 
+
+SELECT e.name, d.dept_name FROM employee e JOIN department d ON e.dept_id = d.id;  
+
+Q: Difference between UNION, JOIN, and INTERSECT? 
+A: 
+
+UNION: Combines results of two queries, removes duplicates. 
+
+JOIN: Combines rows based on related columns. 
+
+INTERSECT: Returns common rows from two queries. 
+
+Q: What are DML and DDL commands? 
+A: 
+
+DML: Data Manipulation Language (INSERT, UPDATE, DELETE) 
+
+DDL: Data Definition Language (CREATE, ALTER, DROP) 
+
+Q: What are the 4 types of JDBC drivers? 
+A: 
+
+JDBC-ODBC Bridge Driver 
+
+Native-API Driver 
+
+Network Protocol Driver 
+
+Thin Driver 
+
+Q: What are the steps to JDBC connectivity? 
+A: 
+
+Load driver 
+
+Establish connection 
+
+Create statement 
+
+Execute query 
+
+Close connection 
+
+🔹 Strings in Java 
+
+Q: What is the String Pool in Java? 
+A: A memory area where Java stores string literals to optimize memory usage and avoid duplication. 
+
+Q: Difference between String, StringBuilder, and StringBuffer? 
+A: 
+
+String: Immutable 
+
+StringBuilder: Mutable, not thread-safe 
+
+StringBuffer: Mutable, thread-safe 
+
+🔹 OOP & Java Basics 
+
+Q: What are OOP concepts? 
+A: Encapsulation, Inheritance, Polymorphism, Abstraction. 
+
+Q: What are types of constructors in Java? 
+A: 
+
+Default constructor 
+
+Parameterized constructor 
+
+Copy constructor 
+
+Q: What is the difference between ArrayList and LinkedList? 
+A: ArrayList is faster for index access; LinkedList is better for insertions/deletions. 
+
+Q: What is the lifecycle of a thread in Java? 
+A: New → Runnable → Running → Blocked → Terminated. 
+
+Q: What is synchronization and serialization? 
+A: 
+
+Synchronization: Controls thread access to shared resources. 
+
+Serialization: Converts objects to byte streams for storage or transmission. 
+
+🔹 Git, Linux & Agile 
+
+Q: What are Git commands used in collaboration? 
+A: git clone, git pull, git push, git commit, git branch, git merge. 
+
+Q: What are basic Linux commands? 
+A: ls, cd, pwd, mkdir, rm, touch, cat, chmod. 
+
+Q: What is Agile methodology? 
+A: An iterative development approach focused on collaboration, customer feedback, and small releases. 
+
+🔹 Java Features & Code 
+
+Q: What are Java features to write code for? 
+A: 
+
+Abstract classes 
+
+Interfaces 
+
+Lambda expressions 
+
+Stream API 
+
+Spring annotations 
+
+Q: How do you reverse a string in Java? 
+A: 
+
+StringBuilder sb = new StringBuilder("hello"); System.out.println(sb.reverse());  
+
+Q: How to find the 2nd highest salary using SQL? 
+A: 
+
+SELECT MAX(salary) FROM employee WHERE salary < (SELECT MAX(salary) FROM employee);  
+
+🔹 Project & Use Cases 
+
+Q: How do you explain a project module-wise? 
+A: Break down the project into functional modules, describe each module’s purpose, tech stack, and integration points . 
+
+Q: How do you write a project use case with JUnit? 
+A: 
+
+Identify a feature 
+
+Write a test class 
+
+Use @Test annotation 
+
+Assert expected behavior 
+
+Q: What is a project proposal query? 
+A: A sample SQL query or business logic that supports the project’s data flow or reporting requirement. 
+
+ 
+
+Q: What is synchronization in Java? 
+A: Controls access to shared resources in multithreaded environments to prevent race conditions. 
+
+Q: What are threads in Java? 
+A: Lightweight processes that run concurrently to improve performance. 
+
+🔹 Git & Agile 
+
+Q: What are common Git commands? 
+A: git init, git clone, git add, git commit, git push, git pull, git status, git log. 
+
+Q: What is Agile methodology? 
+A: An iterative approach to software development focusing on collaboration, customer feedback, and small releases. 
+
+Q: What is SDLC? 
+A: Software Development Life Cycle — phases include requirement analysis, design, implementation, testing, deployment, and maintenance. 
+
+🔹 SQL & JDBC 
+
+Q: What are SQL joins? 
+A: Combine rows from multiple tables based on related columns (INNER, LEFT, RIGHT, FULL). 
+
+Q: What are JDBC calls? 
+A: Steps include loading driver, establishing connection, creating statement, executing query, and closing connection. 
+
+Q: What are aggregate functions in SQL? 
+A: Functions like SUM(), AVG(), COUNT() that operate on sets of values. 
+
+Q: What are PL/SQL triggers, cursors, procedures, functions? 
+A: Triggers auto-execute on events; cursors handle query results; procedures/functions encapsulate logic. 
+
+🔹 OOP & SOLID 
+
+Q: What are OOP concepts? 
+A: Encapsulation, Inheritance, Polymorphism, Abstraction. 
+
+Q: What are access modifiers in Java? 
+A: public, private, protected, and default — control visibility of classes and members. 
+
+Q: What are exception handlers in Java? 
+A: try, catch, finally, throw, and throws — used to handle runtime errors. 
+
+Q: What is polymorphism in Java? 
+A: Ability of an object to take many forms — method overriding and overloading. 
+
+Q: What is the SOLID principle? 
+A: Five design principles: Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion. 
+
+🔹 Miscellaneous 
+
+Q: What is Log4J? 
+A: A logging framework for Java used to record application behavior and errors. 
+
+Q: What is the internal working of HashMap and HashSet? 
+A: HashMap uses key-value pairs with hashing; HashSet uses HashMap internally to store unique elements. 
+
+Q: What is the difference between HashMap and HashSet? 
+A: HashMap stores key-value pairs; HashSet stores only unique values. 
+
+Q: What is the purpose of a project read task? 
+A: To understand architecture, flow, and implementation details for better contribution or debugging. 
+
+🔶 Hour 1: Core Java + OOP + Collections 
+
+🔹 Topics Covered 
+
+OOP Concepts (Encapsulation, Abstraction, Polymorphism) 
+
+Access Modifiers (public, private, etc.) 
+
+Constructors (Types) 
+
+Exception Handling (final, finally, finalize) 
+
+String vs StringBuilder vs StringBuffer 
+
+String Pool 
+
+Collection Framework (ArrayList, LinkedList, HashMap, HashSet) 
+
+Comparable vs Comparator 
+
+Collection vs Collections 
+
+🔹 Flow 
+
+Recap (15 min): Quick whiteboard walkthrough of OOP and Collections 
+
+Hands-on (25 min): 
+
+Code: Reverse a string 
+
+Code: Sort using Comparator 
+
+Code: HashMap vs Hashtable demo 
+
+Challenge (20 min): 
+
+Scenario: Add a variable using SOLID (Open/Closed Principle) 
+
+Quiz: Identify correct access modifier for given use case 
+
+🔶 Hour 2: Java 8 + Threads + JDBC 
+
+🔹 Topics Covered 
+
+Java 8 Features: 
+
+Lambda, Functional Interfaces, Stream API 
+
+Default & Static Methods 
+
+Threads Lifecycle 
+
+Synchronization & Serialization 
+
+JDBC: 
+
+4 Driver Types 
+
+Connection Steps 
+
+Writing Queries 
+
+🔹 Flow 
+
+Recap (15 min): Diagram of thread lifecycle + JDBC flow 
+
+Hands-on (25 min): 
+
+Code: Lambda + Stream filter 
+
+Code: JDBC connection + query 
+
+Challenge (20 min): 
+
+Task: Write JDBC code to fetch employee data 
+
+Quiz: Match JDBC driver types to use cases 
+
+🔶 Hour 3: SQL + Git + Agile + Project Use Case 
+
+🔹 Topics Covered 
+
+SQL: 
+
+Joins (with examples) 
+
+UNION vs JOIN vs INTERSECT 
+
+DML vs DDL 
+
+2nd Highest Salary Query 
+
+Git Commands (collaboration focus) 
+
+Agile Methodology + SDLC 
+
+Project Breakdown (module-wise) 
+
+Spring Basics (IOC, DI) 
+
+JUnit (Use case testing) 
+
+Log4J (Theory) 
+
+🔹 Flow 
+
+Recap (15 min): SQL joins visual + Git command cheat sheet 
+
+Hands-on (25 min): 
+
+SQL: Write JOIN + 2nd highest salary query 
+
+Git: Simulate push/pull workflow 
+
+Challenge (20 min): 
+
+Task: Explain a project module using Spring + JUnit 
+
+Quiz: Identify correct Git command for scenario 
+
+ 

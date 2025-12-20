@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Notes: Order Lifecycle Management Module (2.2)</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        h1 {
+            border-bottom: 2px solid #eaeaea;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #2c3e50;
+            margin-top: 40px;
+            border-bottom: 1px solid #eaeaea;
+            padding-bottom: 5px;
+        }
+        h3 {
+            color: #34495e;
+            margin-top: 25px;
+        }
+        ul {
+            margin-bottom: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        code {
+            background-color: #f1f1f1;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 0.9em;
+            color: #d63384;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+        }
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        strong {
+            color: #212529;
+        }
+        @media print {
+            body {
+                max-width: 100%;
+                padding: 0;
+            }
+            h2 {
+                page-break-before: auto;
+            }
+            table {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Interview Notes: Order Lifecycle Management Module (2.2)</h1>
+    <h2>Module Overview</h2>
+    <p>The <strong>Order Lifecycle Management Module</strong> handles the end-to-end process of an order, starting from
+        the moment a customer places an order to its final delivery. It serves two distinct user roles:</p>
+    <ul>
+        <li><strong>Customers</strong>: View order history, track status (Confirmed &rarr; Delivered), and cancel
+            eligible orders.</li>
+        <li><strong>Admins</strong>: View all orders, update statuses, manage logistics (shipping dates), and handle
+            cancellations.</li>
+    </ul>
+    <h2>Workflow</h2>
+    <h3>1. Order Creation</h3>
+    <ul>
+        <li><strong>Trigger</strong>: Customer clicks "Checkout" in the Cart.</li>
+        <li><strong>Process</strong>:
+            <ul>
+                <li><code>CartService</code> validates stock.</li>
+                <li>User is redirected to <strong>Payment</strong> (simulated).</li>
+                <li>Upon success, <code>OrderService.createOrder()</code> is called with the cart items.</li>
+                <li>Stock levels are updated in <code>ProductService</code>.</li>
+                <li>Cart is cleared.</li>
+            </ul>
+        </li>
+    </ul>
+    <h3>2. Customer Tracking</h3>
+    <ul>
+        <li><strong>View</strong>: Customers see a list of their orders in <code>OrdersPage</code>.</li>
+        <li><strong>Status Tracking</strong>: Visual progress bar (<code>Confirmed</code> &rarr; <code>Packed</code>
+            &rarr; <code>Shipped</code> &rarr; <code>Delivered</code>).</li>
+        <li><strong>Cancellation</strong>: Customers can cancel an order <em>only</em> if it has not yet been shipped.
+        </li>
+    </ul>
+    <h3>3. Admin Management</h3>
+    <ul>
+        <li><strong>View</strong>: Admins see a dashboard of <em>all</em> orders across the platform.</li>
+        <li><strong>Status Updates</strong>: Admins manually advance the order status (e.g., mark as "Shipped").</li>
+        <li><strong>Logistics</strong>: Admins input "Estimated Delivery Dates" which are reflected in the customer's
+            view.</li>
+    </ul>
+    <h2>Detailed Data Flow & Architecture</h2>
+    <h3>1. Data Flow: Placing an Order</h3>
+    <p>The data flows through several layers to ensure consistency.</p>
+    <ol>
+        <li><strong>UI Layer (<code>CartPage</code>)</strong>: User triggers checkout.
+            <ul>
+                <li><em>Validation</em>: <code>CartService</code> checks local stock levels.</li>
+            </ul>
+        </li>
+        <li><strong>Service Layer (<code>OrderService</code>)</strong>:
+            <ul>
+                <li>Constructs the order payload (assigns <code>status: 'Confirmed'</code>,
+                    <code>placedOn: new Date()</code>).</li>
+                <li><code>POST /orders</code>: Saves order to <code>db.json</code>.</li>
+            </ul>
+        </li>
+        <li><strong>Inventory Impact</strong>:
+            <ul>
+                <li>Simultaneously, <code>ProductService</code> is called to decrement stock tokens.</li>
+                <li><em>Note</em>: In a real microservice architecture, this would be an atomic transaction or handled
+                    via an event bus (e.g., Kafka). Here, we simulate it with chained Observables
+                    (<code>switchMap</code>).</li>
+            </ul>
+        </li>
+    </ol>
+    <h3>2. Deep Dive: Delivery Tracking Logic</h3>
+    <p>Located in <code>src/app/components/orders/delivery-tracking/delivery-tracking.ts</code>, this component is
+        responsible for the visual feedback of order progress.</p>
+    <ul>
+        <li><strong>Logic</strong>:
+            <ul>
+                <li><code>calculateEstimatedDelivery()</code>: Parses the order date and adds <strong>8 days</strong>.
+                    It handles legacy date formats (string vs DD/MM/YYYY) via manual parsing.</li>
+                <li><code>isStepCompleted(step)</code>: Compares the current order status against the predefined
+                    <code>orderSteps</code> array <code>['Confirmed', 'Packed', 'Shipped', 'Delivered']</code>. If the
+                    current status index is greater than or equal to the step index, the step is marked complete.</li>
+            </ul>
+        </li>
+        <li><strong>UI Integration</strong>: Uses a purely presentational approach. The parent <code>OrdersPage</code>
+            passes the <code>order</code> object, and <code>DeliveryTracking</code> computes the view state. This makes
+            <code>DeliveryTracking</code> a "Dumb Component" (Presentational) that is highly reusable.</li>
+    </ul>
+    <h2>State Management Strategy</h2>
+    <p>The module uses a <strong>Reactive</strong> approach without a heavy state management library (like NgRx), which
+        is suitable for this scale.</p>
+    <ul>
+        <li><strong>Single Source of Truth</strong>: The <code>db.json</code> via <code>OrderService</code> APIs.</li>
+        <li><strong>Local State</strong>: <code>OrdersPage</code> maintains <code>orders[]</code> and
+            <code>selectedOrder</code>.</li>
+        <li><strong>Optimistic Updates</strong>:
+            <ul>
+                <li>When an Admin changes a status, the UI updates <em>immediately</em> while the HTTP request fires in
+                    the background.</li>
+                <li>If the request fails, error handling would technically be needed to revert (though simplistic alerts
+                    are used currently).</li>
+            </ul>
+        </li>
+        <li><strong>Role-Based Access Control (RBAC)</strong>:
+            <ul>
+                <li>Frontend: <code>OrdersPage</code> checks <code>currentUser.role</code>.</li>
+                <li>Backend (Mock): <code>AuthInterceptor</code> attaches hardcoded tokens (<code>ADMIN_TOKEN</code> vs
+                    <code>CUSTOMER_TOKEN</code>) to prove identity, simulating secure backend validation.</li>
+            </ul>
+        </li>
+    </ul>
+    <h2>Impacted Files & Responsibilities</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>File Path</th>
+                <th>Responsibility</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>src/app/services/order.ts</code></td>
+                <td><strong>Core Logic / API Layer</strong>.<br>Handles all HTTP requests (<code>GET</code>,
+                    <code>POST</code>, <code>PUT</code>) to <code>db.json</code>. Contains logic for filtering orders by
+                    user (<code>getOrdersForUser</code>) vs fetching all for admin (<code>getAllOrders</code>).</td>
+            </tr>
+            <tr>
+                <td><code>src/app/components/orders/orders.ts</code></td>
+                <td><strong>Unified UI Controller</strong>.<br>Handles logic for both Customer and Admin views based on
+                    <code>currentUser.role</code>.<br>
+                    <ul>
+                        <li><strong>Customer</strong>: Fetches personal orders, handles cancellation.</li>
+                        <li><strong>Admin</strong>: Fetches global orders, handles status updates and logistics editing.
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td><code>src/app/components/orders/orders.html</code></td>
+                <td><strong>View Layer</strong>.<br>Uses structural directives (<code>*ngIf="isAdmin"</code>) to toggle
+                    between the interactive Admin Dashboard table and the visual Customer Order History cards.</td>
+            </tr>
+            <tr>
+                <td><code>src/app/services/cart.ts</code></td>
+                <td><strong>Pre-Order State</strong>.<br>Manages the temporary state of items before they become a
+                    permanent order.</td>
+            </tr>
+            <tr>
+                <td><code>src/db.json</code></td>
+                <td><strong>Database</strong>.<br>Stores the persistent <code>orders</code> collection.</td>
+            </tr>
+        </tbody>
+    </table>
+    <h2>Key Challenges & Solutions</h2>
+    <ol>
+        <li><strong>Date Parsing</strong>: Handling mixed date formats from JSON.
+            <ul>
+                <li><em>Solution</em>: Robust parsing logic in <code>calculateEstimatedDelivery</code> that handles both
+                    ISO strings and <code>DD/MM/YYYY</code>.</li>
+            </ul>
+        </li>
+        <li><strong>Admin vs Customer View</strong>: Avoiding code duplication.
+            <ul>
+                <li><em>Solution</em>: A single <code>OrdersPage</code> with <code>*ngIf="isAdmin"</code> toggles. This
+                    reduces maintenance overhead but increases component complexity slightly.</li>
+            </ul>
+        </li>
+        <li><strong>Concurrency</strong>: Preventing customers from cancelling shipped orders.
+            <ul>
+                <li><em>Solution</em>: Double-check: Button is disabled in UI if status is <code>Shipped</code>. API
+                    layer (<code>cancelOrder</code> in <code>OrderService</code>) throws an error if status is
+                    <code>Shipped</code> or <code>Delivered</code>.</li>
+            </ul>
+        </li>
+    </ol>
+    <h2>Future Scalability (Interview Talking Points)</h2>
+    <ul>
+        <li><strong>Pagination</strong>: Currently fetches all orders. For 10k+ orders, we would implement server-side
+            pagination similar to the Product Catalog.</li>
+        <li><strong>WebSockets</strong>: Real-time status updates (e.g., "Your order has been shipped!") without
+            refreshing.</li>
+        <li><strong>State Management</strong>: As complexity grows, migrating to <strong>NgRx</strong> or
+            <strong>Signals</strong> would better handle the shared state between the Dashboard and Notifications.</li>
+    </ul>
+</body>
+</html>
